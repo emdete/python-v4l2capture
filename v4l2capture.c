@@ -306,6 +306,33 @@ static PyObject *Video_device_get_format(
                        current_fourcc);
 }
 
+static PyObject *Video_device_get_formats(
+  Video_device * self) {
+  struct v4l2_fmtdesc format;
+  int index = 0;
+  PyObject *ret = PyList_New(0);
+  CLEAR(format);
+  while (index < 5) {
+    format.index = index++;
+    format.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    if (my_ioctl(self->fd, VIDIOC_ENUM_FMT, &format)) {
+      if (errno == EINVAL)
+	    break;
+      PyErr_SetString(PyExc_ValueError, "Error requesting formats");
+      return NULL;
+    }
+    char p[5];
+    get_fourcc_str(p, format.pixelformat);
+#if PY_MAJOR_VERSION < 3
+    PyObject *pixelformat = PyString_FromString(p);
+#else
+    PyObject *pixelformat = PyBytes_FromString(p);
+#endif
+    PyList_Append(ret, pixelformat);
+  }
+  return ret;
+}
+
 static PyObject *Video_device_get_fourcc(
   Video_device * self,
   PyObject * args) {
@@ -863,6 +890,10 @@ static PyMethodDef Video_device_methods[] = {
    "Returns three strings with information about the video device, and one "
    "set containing strings identifying the capabilities of the video "
    "device."},
+  {"get_formats",
+   (PyCFunction) Video_device_get_formats, METH_NOARGS,
+   "get_formats() -> [] \n\n"
+   "Request the video device to get available fourcc formats. "},
   {"get_fourcc", (PyCFunction) Video_device_get_fourcc, METH_VARARGS,
    "get_fourcc(fourcc_string) -> fourcc_int\n\n"
    "Return the fourcc string encoded as int."},
