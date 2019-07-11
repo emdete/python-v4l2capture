@@ -13,7 +13,7 @@
 # purpose, without any conditions, unless such conditions are
 # required by law.
 
-import Image
+from PIL import Image
 import select
 import v4l2capture
 import time
@@ -37,7 +37,9 @@ video.queue_all_buffers()
 # Start the device. This lights the LED if it's a camera that has one.
 video.start()
 
+# capture 10sec
 stop_time = time.time() + 10.0
+
 with open('video.mjpg', 'wb') as f:
     while stop_time >= time.time():
         # Wait for the device to fill the buffer.
@@ -48,4 +50,4 @@ with open('video.mjpg', 'wb') as f:
         f.write(image_data)
     
 video.close()
-print "Saved video.mjpg (Size: " + str(size_x) + " x " + str(size_y) + ")"
+print("Saved video.mjpg (Size: {} x {})".format(size_x, size_y))
