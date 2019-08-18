@@ -735,7 +735,7 @@ static PyObject *Video_device_create_buffers(
     return NULL;
   }
 
-  int i;
+  unsigned int i;
 
   for (i = 0; i < reqbuf.count; i++) {
     struct v4l2_buffer buffer;
