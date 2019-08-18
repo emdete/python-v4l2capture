@@ -33,6 +33,21 @@ video.create_buffers(1)
 # before calling 'start'.
 video.queue_all_buffers()
 
+video.set_brightness(20)
+print video.get_brightness()
+video.set_saturation(10)
+print video.get_saturation()
+video.set_contrast(20)
+print video.get_contrast()
+video.set_hue(30)
+print video.get_hue()
+video.set_gamma(80)
+print video.get_gamma()
+video.set_sharpness(4)
+print video.get_sharpness()
+video.set_zoom(4)
+print video.get_zoom()
+
 # Start the device. This lights the LED if it's a camera that has one.
 video.start()
 
