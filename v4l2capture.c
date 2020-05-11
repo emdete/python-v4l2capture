@@ -8,7 +8,7 @@
 // possible: I grant anyone the right to use this work for any
 // purpose, without any conditions, unless such conditions are
 // required by law.
-
+#define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #include <fcntl.h>
 #include <linux/videodev2.h>
@@ -336,7 +336,7 @@ static PyObject *Video_device_get_fourcc(
   Video_device * self,
   PyObject * args) {
   char *fourcc_str;
-  int size;
+  Py_ssize_t size;
   int fourcc;
   if (!PyArg_ParseTuple(args, "s#", &fourcc_str, &size)) {
     return NULL;
@@ -767,7 +767,7 @@ static PyObject *Video_device_get_framesizes(
   struct v4l2_frmsizeenum frmsize;
   CLEAR(frmsize);
   char *fourcc_str;
-  int size;
+  Py_ssize_t size;
   if (!PyArg_ParseTuple(args, "s#", &fourcc_str, &size)) {
     return NULL;
   }
@@ -830,7 +830,7 @@ static PyObject *Video_device_get_frameintervals(
   struct v4l2_frmivalenum frmival;
   CLEAR(frmival);
   char *fourcc_str;
-  int size;
+  Py_ssize_t size;
   if (!PyArg_ParseTuple
       (args, "s#ii", &fourcc_str, &size, &frmival.width, &frmival.height)) {
     return NULL;
