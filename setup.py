@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 #
 # python-v4l2capture
 #
@@ -25,4 +25,6 @@ setup(
         "License :: Public Domain",
         "Programming Language :: C"],
     ext_modules = [
-        Extension("v4l2capture", ["v4l2capture.c"], libraries = ["v4l2"])])
+        Extension("v4l2capture", ["v4l2capture.c"],
+        libraries=["v4l2"], extra_compile_args=['-DUSE_LIBV4L', ],
+        )])

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 #
 # python-v4l2capture
 #
@@ -13,7 +13,7 @@
 # purpose, without any conditions, unless such conditions are
 # required by law.
 
-import Image
+from PIL import Image
 import select
 import v4l2capture
 
@@ -33,6 +33,21 @@ video.create_buffers(1)
 # before calling 'start'.
 video.queue_all_buffers()
 
+video.set_brightness(20)
+print video.get_brightness()
+video.set_saturation(10)
+print video.get_saturation()
+video.set_contrast(20)
+print video.get_contrast()
+video.set_hue(30)
+print video.get_hue()
+video.set_gamma(80)
+print video.get_gamma()
+video.set_sharpness(4)
+print video.get_sharpness()
+video.set_zoom(4)
+print video.get_zoom()
+
 # Start the device. This lights the LED if it's a camera that has one.
 video.start()
 
@@ -42,6 +57,6 @@ select.select((video,), (), ())
 # The rest is easy :-)
 image_data = video.read()
 video.close()
-image = Image.fromstring("RGB", (size_x, size_y), image_data)
+image = Image.frombytes("RGB", (size_x, size_y), image_data)
 image.save("image.jpg")
-print "Saved image.jpg (Size: " + str(size_x) + " x " + str(size_y) + ")"
+print("Saved image.jpg (Size: {} x {})".format(size_x, size_y))
