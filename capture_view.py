@@ -14,15 +14,78 @@ from v4l2capture import Video_device
 def cmp(a, b):
 	return (a > b) - (a < b)
 
-class Cap(Frame):
+class Cam(Frame):
 	def __init__(self):
 		self.root = Tk()
-		self.root.bind('q', lambda e: self.root.quit())
+		def bind(e, f):
+			self.root.bind(e, f)
+			print(e, 'is', f.__name__, )
+		bind('q', lambda e: self.root.quit())
+		bind('<Home>', self.raise_saturation)
+		bind('<End>', self.lower_saturation)
+		bind('<Prior>', self.raise_gamma)
+		bind('<Next>', self.lower_gamma)
+		bind('<Up>', self.raise_exposure)
+		bind('<Down>', self.lower_exposure)
+		bind('<space>', self.raise_contrast)
+		bind('<BackSpace>', self.lower_contrast)
+		bind('<Right>', self.raise_brightness)
+		bind('<Left>', self.lower_brightness)
 		Frame.__init__(self, self.root)
 		self.x_canvas = Canvas(self.root, width=800, height=800, )
 		self.x_canvas.pack(side=TOP)
 		self.video = None
 		self.do_start_video()
+
+	def lower_gamma(self, *args):
+		if self.video:
+			self.gamma = self.video.set_gamma(self.gamma - 10)
+			print('gamma', self.gamma)
+
+	def raise_gamma(self, *args):
+		if self.video:
+			self.gamma = self.video.set_gamma(self.gamma + 10)
+			print('gamma', self.gamma)
+
+	def lower_saturation(self, *args):
+		if self.video:
+			self.saturation = self.video.set_saturation(self.saturation - 10)
+			print('saturation', self.saturation)
+
+	def raise_saturation(self, *args):
+		if self.video:
+			self.saturation = self.video.set_saturation(self.saturation + 10)
+			print('saturation', self.saturation)
+
+	def lower_contrast(self, *args):
+		if self.video:
+			self.contrast = self.video.set_contrast(self.contrast - 10)
+			print('contrast', self.contrast)
+
+	def raise_contrast(self, *args):
+		if self.video:
+			self.contrast = self.video.set_contrast(self.contrast + 10)
+			print('contrast', self.contrast)
+
+	def lower_brightness(self, *args):
+		if self.video:
+			self.brightness = self.video.set_brightness(self.brightness - 10)
+			print('brightness', self.brightness)
+
+	def raise_brightness(self, *args):
+		if self.video:
+			self.brightness = self.video.set_brightness(self.brightness + 10)
+			print('brightness', self.brightness)
+
+	def lower_exposure(self, *args):
+		if self.video:
+			self.exposure = self.video.set_exposure_absolute(self.exposure - 10)
+			print('exposure', self.exposure)
+
+	def raise_exposure(self, *args):
+		if self.video:
+			self.exposure = self.video.set_exposure_absolute(self.exposure + 10)
+			print('exposure', self.exposure)
 
 	def do_stop_video(self, *args):
 		if self.video is not None:
@@ -41,12 +104,25 @@ class Cap(Frame):
 			self.framesize = caps[len(caps)//2]
 			print('framesize', self.framesize)
 			self.framesize['size_x'], self.framesize['size_y'] = self.video.set_format(self.framesize['size_x'], self.framesize['size_y'], 0, 'MJPEG')
+			self.exposure = self.video.get_exposure_absolute()
+			print('exposure', self.exposure)
+			self.brightness = self.video.get_brightness()
+			print('brightness', self.brightness)
+			self.hue = self.video.get_hue()
+			print('hue', self.hue)
+			self.saturation = self.video.get_saturation()
+			print('saturation', self.saturation)
+			self.contrast = self.video.get_contrast()
+			print('contrast', self.contrast)
+			self.gamma = self.video.get_gamma()
+			print('gamma', self.gamma)
 			try: self.video.set_auto_white_balance(True)
 			except: print('error setting wb')
-			try: self.video.set_exposure_absolute(600) # self.video.set_exposure_auto(True)
+			try: self.video.set_exposure_auto(True)
 			except: print('error setting ae')
 			try: self.video.set_focus_auto(True)
 			except: print('error setting af')
+			self.video.set_saturation(50)
 			self.video.create_buffers(30)
 			self.video.queue_all_buffers()
 			self.video.start()
@@ -63,7 +139,7 @@ class Cap(Frame):
 
 def main():
 	' main start point of the program '
-	app = Cap()
+	app = Cam()
 	app.mainloop()
 	app.root.destroy()
 
